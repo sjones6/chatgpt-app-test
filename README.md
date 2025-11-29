@@ -149,3 +149,8 @@ The configuration automatically handles:
 - Production URLs via `VERCEL_PROJECT_PRODUCTION_URL`
 - Preview/branch URLs via `VERCEL_BRANCH_URL`
 - Asset prefixing for correct resource loading in iframes
+
+## OIDC Client
+
+1. Configure OAuth2 client in Supabase
+2. Add ChatGPT to redirect URLs

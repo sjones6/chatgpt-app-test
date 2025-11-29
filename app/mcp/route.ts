@@ -1,6 +1,47 @@
 import { baseURL } from "@/baseUrl";
-import { createMcpHandler } from "mcp-handler";
+import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
+import { createMcpHandler, withMcpAuth } from "mcp-handler";
+import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
+
+const SUPABASE_PROJECT_ID =
+  process.env.SUPABASE_PROJECT_ID || "hztwecyfjyjldqajnqnx";
+const SUPABASE_URL = `https://${SUPABASE_PROJECT_ID}.supabase.co`;
+
+const supabase = createClient(SUPABASE_URL, "", {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+  },
+});
+
+const verifyToken = async (
+  req: Request,
+  bearerToken?: string
+): Promise<AuthInfo | undefined> => {
+  if (!bearerToken) return undefined;
+
+  try {
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(bearerToken);
+
+    if (error || !user) return undefined;
+
+    return {
+      token: bearerToken,
+      scopes: ["read:stuff"],
+      clientId: user.id,
+      extra: {
+        userId: user.id,
+        email: user.email,
+      },
+    };
+  } catch {
+    return undefined;
+  }
+};
 
 const getAppsSdkCompatibleHtml = async (baseUrl: string, path: string) => {
   const result = await fetch(`${baseUrl}${path}`);
@@ -30,6 +71,7 @@ function widgetMeta(widget: ContentWidget) {
 
 const handler = createMcpHandler(async (server) => {
   const html = await getAppsSdkCompatibleHtml(baseURL, "/");
+  
 
   const contentWidget: ContentWidget = {
     id: "show_content",
@@ -98,5 +140,9 @@ const handler = createMcpHandler(async (server) => {
   );
 });
 
-export const GET = handler;
-export const POST = handler;
+const authHandler = withMcpAuth(handler, verifyToken, {
+  required: true,
+});
+
+export const GET = authHandler;
+export const POST = authHandler;
