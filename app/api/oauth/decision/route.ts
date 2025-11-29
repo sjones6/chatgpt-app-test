@@ -2,9 +2,9 @@ import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const formData = await request.formData();
-  const decision = formData.get("decision");
-  const authorizationId = formData.get("authorization_id") as string;
+  const body = await request.json();
+  const decision = body.decision;
+  const authorizationId = body.authorization_id as string;
 
   if (!authorizationId) {
     return NextResponse.json(
@@ -15,20 +15,22 @@ export async function POST(request: Request) {
 
   const supabase = await createClient();
 
+  // Approved authorization
   if (decision === "approve") {
     const { data, error } =
       await supabase.auth.oauth.approveAuthorization(authorizationId);
     if (error || !data) {
       return NextResponse.json({ error: error?.message || "Failed to approve authorization" }, { status: 400 });
     }
-    return NextResponse.redirect(data.redirect_url);
-  } else {
-    const { data, error } =
-      await supabase.auth.oauth.denyAuthorization(authorizationId);
-    if (error || !data) {
-      return NextResponse.json({ error: error?.message || "Failed to deny authorization" }, { status: 400 });
-    }
-    return NextResponse.redirect(data.redirect_url);
+    return NextResponse.json({ redirect_url: data.redirect_url });
   }
+
+  // Denied authorization
+  const { data, error } =
+  await supabase.auth.oauth.denyAuthorization(authorizationId);
+  if (error || !data) {
+    return NextResponse.json({ error: error?.message || "Failed to deny authorization" }, { status: 400 });
+  }
+  return NextResponse.json({ redirect_url: data.redirect_url });
 }
 

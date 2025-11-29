@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { DecisionButtons } from "./decision-buttons";
 
 export default async function ConsentPage({
   searchParams,
@@ -66,27 +67,7 @@ export default async function ConsentPage({
             </div>
           )}
         </div>
-        <form action="/api/oauth/decision" method="POST">
-          <input type="hidden" name="authorization_id" value={authorizationId} />
-          <div className="flex gap-4">
-            <button
-              type="submit"
-              name="decision"
-              value="approve"
-              className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-base h-12 px-5"
-            >
-              Approve
-            </button>
-            <button
-              type="submit"
-              name="decision"
-              value="deny"
-              className="rounded-full border border-solid transition-colors flex items-center justify-center bg-transparent border-foreground text-foreground gap-2 hover:bg-foreground hover:text-background font-medium text-base h-12 px-5"
-            >
-              Deny
-            </button>
-          </div>
-        </form>
+        <DecisionButtons authorizationId={authorizationId} />
       </main>
     </div>
   );
