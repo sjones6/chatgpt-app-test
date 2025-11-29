@@ -27,6 +27,8 @@ export async function middleware(request: NextRequest) {
    * MCP routes handle their own bearer token authentication, so they bypass
    * session-based auth while still receiving CORS headers.
    */
+  console.log("request.nextUrl.pathname", request.nextUrl.pathname);
+  console.log("request.url", request.url);
   if (request.nextUrl.pathname.startsWith("/mcp")) {
     const response = NextResponse.next();
     response.headers.set("Access-Control-Allow-Origin", "*");
