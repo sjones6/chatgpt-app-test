@@ -1,19 +1,8 @@
 import { baseURL } from "@/baseUrl";
 import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
 import { createMcpHandler, withMcpAuth } from "mcp-handler";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 import { z } from "zod";
-
-const SUPABASE_PROJECT_ID =
-  process.env.SUPABASE_PROJECT_ID || "hztwecyfjyjldqajnqnx";
-const SUPABASE_URL = `https://${SUPABASE_PROJECT_ID}.supabase.co`;
-
-const supabase = createClient(SUPABASE_URL, "", {
-  auth: {
-    persistSession: false,
-    autoRefreshToken: false,
-  },
-});
 
 const verifyToken = async (
   req: Request,
