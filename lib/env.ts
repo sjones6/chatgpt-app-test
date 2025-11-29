@@ -6,23 +6,32 @@ import { z } from "zod";
  */
 const envSchema = z.object({
   /**
+   * Supabase project URL.
+   * Required for connecting to Supabase.
+   */
+  NEXT_PUBLIC_SUPABASE_URL: z
+    .string()
+    .url()
+    .describe("Supabase project URL"),
+
+  /**
+   * Supabase anonymous/public key.
+   * Required for authenticating requests to Supabase.
+   */
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY: z
+    .string()
+    .min(1)
+    .describe("Supabase anonymous/public key"),
+
+  /**
    * Supabase project ID.
-   * Used to construct Supabase API URLs.
+   * Used to construct Supabase Auth API URL.
    * Defaults to "hztwecyfjyjldqajnqnx" if not provided.
    */
   SUPABASE_PROJECT_ID: z
     .string()
     .default("hztwecyfjyjldqajnqnx")
     .describe("Supabase project ID"),
-
-  /**
-   * Supabase anonymous/public key.
-   * Required for authenticating requests to Supabase.
-   */
-  SUPABASE_ANON_KEY: z
-    .string()
-    .min(1)
-    .describe("Supabase anonymous/public key"),
 
   /**
    * Node environment.
@@ -79,8 +88,10 @@ const envSchema = z.object({
  * Throws an error at module load if validation fails.
  */
 const env = envSchema.parse({
+  NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY:
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY,
   SUPABASE_PROJECT_ID: process.env.SUPABASE_PROJECT_ID,
-  SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
   NODE_ENV: process.env.NODE_ENV,
   VERCEL_ENV: process.env.VERCEL_ENV,
   VERCEL_PROJECT_PRODUCTION_URL: process.env.VERCEL_PROJECT_PRODUCTION_URL,
@@ -89,20 +100,19 @@ const env = envSchema.parse({
 });
 
 /**
- * Supabase project ID.
+ * Supabase project URL.
  */
-export const SUPABASE_PROJECT_ID = env.SUPABASE_PROJECT_ID;
+export const SUPABASE_URL = env.NEXT_PUBLIC_SUPABASE_URL;
 
 /**
  * Supabase anonymous/public key.
  */
-export const SUPABASE_ANON_KEY = env.SUPABASE_ANON_KEY;
+export const SUPABASE_ANON_KEY = env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY;
 
 /**
- * Supabase API URL.
- * Constructed from the project ID.
+ * Supabase project ID.
  */
-export const SUPABASE_URL = `https://${env.SUPABASE_PROJECT_ID}.supabase.co`;
+export const SUPABASE_PROJECT_ID = env.SUPABASE_PROJECT_ID;
 
 /**
  * Supabase Auth API URL.

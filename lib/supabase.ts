@@ -1,14 +1,11 @@
-import { createClient } from "@supabase/supabase-js";
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from "@/lib/env";
+import { createClient as createServerClient } from "./supabase/server";
 
 /**
- * Supabase client instance.
- * Configured for server-side use with session persistence disabled.
+ * Creates a Supabase SSR client for use in Next.js server components and API routes.
+ * Handles cookie-based session management.
+ * @deprecated Use createClient from '@/lib/supabase/server' directly instead.
  */
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: {
-    persistSession: false,
-    autoRefreshToken: false,
-  },
-});
+export async function createSupabaseServerClient() {
+  return await createServerClient();
+}
 

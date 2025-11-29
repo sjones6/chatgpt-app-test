@@ -1,7 +1,7 @@
 import { baseURL } from "@/baseUrl";
 import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
 import { createMcpHandler, withMcpAuth } from "mcp-handler";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
 
 const verifyToken = async (
@@ -10,6 +10,8 @@ const verifyToken = async (
 ): Promise<AuthInfo | undefined> => {
   if (!bearerToken) return undefined;
 
+  const supabase = await createClient();
+  
   try {
     const {
       data: { user },
