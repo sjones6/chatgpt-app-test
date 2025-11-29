@@ -18,17 +18,17 @@ export async function POST(request: Request) {
   if (decision === "approve") {
     const { data, error } =
       await supabase.auth.oauth.approveAuthorization(authorizationId);
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+    if (error || !data) {
+      return NextResponse.json({ error: error?.message || "Failed to approve authorization" }, { status: 400 });
     }
-    return NextResponse.redirect(data.redirect_to);
+    return NextResponse.redirect(data.redirect_url);
   } else {
     const { data, error } =
       await supabase.auth.oauth.denyAuthorization(authorizationId);
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+    if (error || !data) {
+      return NextResponse.json({ error: error?.message || "Failed to deny authorization" }, { status: 400 });
     }
-    return NextResponse.redirect(data.redirect_to);
+    return NextResponse.redirect(data.redirect_url);
   }
 }
 

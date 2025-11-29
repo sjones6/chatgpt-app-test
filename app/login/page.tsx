@@ -2,9 +2,9 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 
-export default function LoginPage() {
+function LoginForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const redirect = searchParams.get("redirect") || "/";
@@ -92,6 +92,25 @@ export default function LoginPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="font-sans flex items-center justify-center min-h-screen p-8">
+        <main className="w-full max-w-md">
+          <div className="flex flex-col gap-8">
+            <h1 className="text-4xl font-black tracking-tight text-center">
+              Sign In
+            </h1>
+            <div className="text-center text-muted-foreground">Loading...</div>
+          </div>
+        </main>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }
 

@@ -20,7 +20,7 @@ export default async function ConsentPage({
 
   if (!user) {
     redirect(
-      `/login?redirect=/oauth/consent?authorization_id=${authorizationId}`
+      `/auth/login?redirect=/oauth/consent?authorization_id=${authorizationId}`
     );
   }
 
@@ -30,6 +30,8 @@ export default async function ConsentPage({
   if (error || !authDetails) {
     return <div>Error: {error?.message || "Invalid authorization request"}</div>;
   }
+
+  const scopes = authDetails.scope?.split(" ");
 
   return (
     <div className="font-sans p-8 sm:p-20 max-w-2xl mx-auto">
@@ -48,14 +50,14 @@ export default async function ConsentPage({
           <div>
             <p className="font-semibold">Redirect URI:</p>
             <p className="font-mono text-sm break-all">
-              {authDetails.redirect_uri}
+              {authDetails.redirect_url}
             </p>
           </div>
-          {authDetails.scopes && authDetails.scopes.length > 0 && (
+          {scopes.length > 0 && (
             <div>
               <p className="font-semibold mb-2">Requested permissions:</p>
               <ul className="list-disc list-inside space-y-1">
-                {authDetails.scopes.map((scope) => (
+                {scopes.map((scope) => (
                   <li key={scope} className="font-mono text-sm">
                     {scope}
                   </li>
