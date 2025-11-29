@@ -29,7 +29,7 @@ export async function middleware(request: NextRequest) {
    */
   console.log("request.nextUrl.pathname", request.nextUrl.pathname);
   console.log("request.url", request.url);
-  if (request.nextUrl.pathname.startsWith("/mcp")) {
+  if (request.nextUrl.pathname.startsWith("/mcp") || request.nextUrl.pathname.includes(".well-known")) {
     const response = NextResponse.next();
     response.headers.set("Access-Control-Allow-Origin", "*");
     response.headers.set(
