@@ -21,15 +21,28 @@ export async function middleware(request: NextRequest) {
     response.headers.set("Access-Control-Allow-Headers", "*");
     return response;
   }
+  
+
+  /**
+   * Exclude static assets and public files from authentication checks.
+   * These include Next.js static assets, images, fonts, and other public resources.
+   */
+  const pathname = request.nextUrl.pathname;
+  const isAsset =
+    pathname.startsWith("/_next/static") ||
+    pathname.startsWith("/_next/image") ||
+    pathname.startsWith("/favicon.ico") ||
+    pathname.match(/\.(ico|png|jpg|jpeg|gif|svg|webp|css|js|woff|woff2|ttf|eot|json)$/i);
 
   /**
    * Exclude MCP routes from Supabase authentication checks.
    * MCP routes handle their own bearer token authentication, so they bypass
    * session-based auth while still receiving CORS headers.
    */
-  console.log("request.nextUrl.pathname", request.nextUrl.pathname);
-  console.log("request.url", request.url);
-  if (request.nextUrl.pathname.startsWith("/mcp") || request.nextUrl.pathname.includes(".well-known")) {
+  const isMCPRoute =
+    pathname.startsWith("/mcp") || pathname.includes(".well-known");
+
+  if (isAsset || isMCPRoute) {
     const response = NextResponse.next();
     response.headers.set("Access-Control-Allow-Origin", "*");
     response.headers.set(
