@@ -70,6 +70,7 @@ const handler = createMcpHandler(async (server) => {
       Cookie: c.toString(),
     },
   });
+  console.log("cookies", c.getAll());
   console.log("loaded html");
   console.log(html);
   
