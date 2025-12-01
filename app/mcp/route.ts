@@ -3,6 +3,8 @@ import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
 import { createMcpHandler, withMcpAuth } from "mcp-handler";
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
+import { headers } from "next/headers";
+import { cookies } from "next/headers";
 
 const verifyToken = async (
   req: Request,
@@ -34,8 +36,8 @@ const verifyToken = async (
   }
 };
 
-const getAppsSdkCompatibleHtml = async (baseUrl: string, path: string) => {
-  const result = await fetch(`${baseUrl}${path}`);
+const getAppsSdkCompatibleHtml = async (baseUrl: string, path: string, init?: RequestInit) => {
+  const result = await fetch(`${baseUrl}${path}`, init);
   return await result.text();
 };
 
@@ -61,9 +63,14 @@ function widgetMeta(widget: ContentWidget) {
 }
 
 const handler = createMcpHandler(async (server) => {
-  const html = await getAppsSdkCompatibleHtml(baseURL, "/");
+  const c = await cookies();
+  // const h = await headers();
+  const html = await getAppsSdkCompatibleHtml(baseURL, "/chatgpt", {
+    headers: {
+      Cookie: c.toString(),
+    },
+  });
   
-
   const contentWidget: ContentWidget = {
     id: "show_content",
     title: "Show Content",
