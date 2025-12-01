@@ -11,6 +11,11 @@ import {
 } from "@/app/hooks";
 import { ChatGptOnly } from "@/components/chatgpt-only";
 
+export const metadata = {
+  title: "ChatGPT Home",
+  description: "ChatGPT Home",
+}
+
 function Home() {
   const toolOutput = useWidgetProps<{
     name?: string;
