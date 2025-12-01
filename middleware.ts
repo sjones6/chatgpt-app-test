@@ -44,6 +44,8 @@ export async function middleware(request: NextRequest) {
   const isMCPRoute =
     pathname.startsWith("/mcp") || pathname.includes(".well-known");
 
+  const cookie = request.headers.get('Cookie')
+  console.log("cookie", cookie);
   console.log("pathname", pathname);
   console.log("isAsset", isAsset);
   console.log("isMCPRoute", isMCPRoute);

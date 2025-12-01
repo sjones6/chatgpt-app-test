@@ -66,6 +66,7 @@ function widgetMeta(widget: ContentWidget) {
 const handler = createMcpHandler(async (server) => {
   const c = await cookies();
   const html = await getAppsSdkCompatibleHtml(baseURL, "/chatgpt", {
+    credentials: 'include',
     headers: {
       Cookie: c.toString(),
     },
