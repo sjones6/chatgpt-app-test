@@ -37,6 +37,7 @@ const verifyToken = async (
 };
 
 const getAppsSdkCompatibleHtml = async (baseUrl: string, path: string, init?: RequestInit) => {
+  console.log("endpoint", `${baseUrl}${path}`);
   const result = await fetch(`${baseUrl}${path}`, init);
   console.log("result status", result.status);
   return await result.text();
@@ -71,7 +72,7 @@ const handler = createMcpHandler(async (server) => {
       Cookie: c.toString(),
     },
   });
-  console.log("cookies", c.getAll());
+  console.log("cookies", c.toString());
   console.log("loaded html");
   console.log(html);
   
