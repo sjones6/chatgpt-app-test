@@ -38,6 +38,7 @@ const verifyToken = async (
 
 const getAppsSdkCompatibleHtml = async (baseUrl: string, path: string, init?: RequestInit) => {
   const result = await fetch(`${baseUrl}${path}`, init);
+  console.log("result status", result.status);
   return await result.text();
 };
 
@@ -64,12 +65,13 @@ function widgetMeta(widget: ContentWidget) {
 
 const handler = createMcpHandler(async (server) => {
   const c = await cookies();
-  // const h = await headers();
   const html = await getAppsSdkCompatibleHtml(baseURL, "/chatgpt", {
     headers: {
       Cookie: c.toString(),
     },
   });
+  console.log("loaded html");
+  console.log(html);
   
   const contentWidget: ContentWidget = {
     id: "show_content",
