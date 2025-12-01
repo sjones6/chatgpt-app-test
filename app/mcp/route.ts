@@ -3,7 +3,6 @@ import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
 import { createMcpHandler, withMcpAuth } from "mcp-handler";
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
-import { headers } from "next/headers";
 import { cookies } from "next/headers";
 
 const verifyToken = async (
@@ -64,84 +63,91 @@ function widgetMeta(widget: ContentWidget) {
   } as const;
 }
 
-const handler = createMcpHandler(async (server) => {
-  const c = await cookies();
-  const html = await getAppsSdkCompatibleHtml(baseURL, "/chatgpt", {
-    credentials: 'include',
-    headers: {
-      Cookie: c.toString(),
-    },
-  });
-  console.log("cookies", c.toString());
-  console.log("loaded html");
-  console.log(html);
-  
-  const contentWidget: ContentWidget = {
-    id: "show_content",
-    title: "Show Content",
-    templateUri: "ui://widget/content-template.html",
-    invoking: "Loading content...",
-    invoked: "Content loaded",
-    html: html,
-    description: "Displays the homepage content",
-    widgetDomain: "https://nextjs.org/docs",
-  };
-  server.registerResource(
-    "content-widget",
-    contentWidget.templateUri,
-    {
-      title: contentWidget.title,
-      description: contentWidget.description,
-      mimeType: "text/html+skybridge",
-      _meta: {
-        "openai/widgetDescription": contentWidget.description,
-        "openai/widgetPrefersBorder": true,
-      },
-    },
-    async (uri) => ({
-      contents: [
-        {
-          uri: uri.href,
-          mimeType: "text/html+skybridge",
-          text: `<html>${contentWidget.html}</html>`,
-          _meta: {
-            "openai/widgetDescription": contentWidget.description,
-            "openai/widgetPrefersBorder": true,
-            "openai/widgetDomain": contentWidget.widgetDomain,
-          },
-        },
-      ],
-    })
-  );
+const handler = (request: Request) => {
+  return createMcpHandler(async (server) => {
 
-  server.registerTool(
-    contentWidget.id,
-    {
-      title: contentWidget.title,
-      description:
-        "Fetch and display the homepage content with the name of the user",
-      inputSchema: {
-        name: z.string().describe("The name of the user to display on the homepage"),
-      },
-      _meta: widgetMeta(contentWidget),
-    },
-    async ({ name }) => {
+    if (!request.auth) {
       return {
-        content: [
-          {
-            type: "text",
-            text: name,
-          },
-        ],
-        structuredContent: {
-          name: name,
-          timestamp: new Date().toISOString(),
-        },
-        _meta: widgetMeta(contentWidget),
+        error: "Unauthorized",
       };
     }
-  );
-});
+
+    const html = await getAppsSdkCompatibleHtml(baseURL, "/chatgpt", {
+      credentials: 'include',
+      headers: {
+        Authorization: request.auth.token,
+      },
+    });
+    console.log("loaded html");
+    console.log(html);
+    
+    const contentWidget: ContentWidget = {
+      id: "show_content",
+      title: "Show Content",
+      templateUri: "ui://widget/content-template.html",
+      invoking: "Loading content...",
+      invoked: "Content loaded",
+      html: html,
+      description: "Displays the homepage content",
+      widgetDomain: "https://nextjs.org/docs",
+    };
+    server.registerResource(
+      "content-widget",
+      contentWidget.templateUri,
+      {
+        title: contentWidget.title,
+        description: contentWidget.description,
+        mimeType: "text/html+skybridge",
+        _meta: {
+          "openai/widgetDescription": contentWidget.description,
+          "openai/widgetPrefersBorder": true,
+        },
+      },
+      async (uri) => ({
+        contents: [
+          {
+            uri: uri.href,
+            mimeType: "text/html+skybridge",
+            text: `<html>${contentWidget.html}</html>`,
+            _meta: {
+              "openai/widgetDescription": contentWidget.description,
+              "openai/widgetPrefersBorder": true,
+              "openai/widgetDomain": contentWidget.widgetDomain,
+            },
+          },
+        ],
+      })
+    );
+  
+    server.registerTool(
+      contentWidget.id,
+      {
+        title: contentWidget.title,
+        description:
+          "Fetch and display the homepage content with the name of the user",
+        inputSchema: {
+          name: z.string().describe("The name of the user to display on the homepage"),
+        },
+        _meta: widgetMeta(contentWidget),
+      },
+      async ({ name }) => {
+        return {
+          content: [
+            {
+              type: "text",
+              text: name,
+            },
+          ],
+          structuredContent: {
+            name: name,
+            timestamp: new Date().toISOString(),
+          },
+          _meta: widgetMeta(contentWidget),
+        };
+      }
+    );
+  })(request);
+};
 
 const authHandler = withMcpAuth(handler, verifyToken, {
   required: true,

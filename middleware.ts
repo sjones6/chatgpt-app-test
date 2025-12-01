@@ -34,21 +34,13 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/favicon.ico") ||
     pathname.match(/\.(ico|png|jpg|jpeg|gif|svg|webp|css|js|woff|woff2|ttf|eot|json)$/i);
 
-
-
   /**
    * Exclude MCP routes from Supabase authentication checks.
    * MCP routes handle their own bearer token authentication, so they bypass
    * session-based auth while still receiving CORS headers.
    */
   const isMCPRoute =
-    pathname.startsWith("/mcp") || pathname.includes(".well-known");
-
-  const cookie = request.headers.get('cookie')
-  console.log("cookie", cookie);
-  console.log("pathname", pathname);
-  console.log("isAsset", isAsset);
-  console.log("isMCPRoute", isMCPRoute);
+    pathname.startsWith("/mcp") || pathname.includes(".well-known") || pathname.startsWith("/chatgpt");
 
   if (isAsset || isMCPRoute) {
     const response = NextResponse.next();
