@@ -38,7 +38,6 @@ export default function RootLayout({
 }
 
 function NextChatSDKBootstrap({ baseUrl }: { baseUrl: string }) {
-  return null;
   return (
     <>
       <base href={baseUrl}></base>
