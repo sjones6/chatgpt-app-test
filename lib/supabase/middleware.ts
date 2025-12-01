@@ -13,17 +13,6 @@ export async function updateSession(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY!,
     {
-      accessToken: async () => {
-        const authHeader = request.headers.get('Authorization')
-        if (!authHeader) return null;
-
-        const token = authHeader?.split(' ')[1]
-        if (!token) return null;
-
-        console.log("extracting token from auth header");
-
-        return token;
-      },
       cookies: {
         getAll() {
           return request.cookies.getAll()
