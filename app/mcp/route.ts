@@ -73,9 +73,8 @@ const handler = (request: Request) => {
     }
 
     const html = await getAppsSdkCompatibleHtml(baseURL, "/chatgpt", {
-      credentials: 'include',
       headers: {
-        Authorization: request.auth.token,
+        Authorization: `Bearer ${request.auth.token}`,
       },
     });
     console.log("loaded html");
