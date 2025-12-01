@@ -7,7 +7,7 @@ export default function ChatGPTLayout({
 }>) {
   return (
     <>
-    <NextChatSDKBootstrap baseUrl={baseURL} />
+    <NextChatSDKBootstrap baseUrl={`${baseURL}/chatgpt`} />
     {children}
     </>
   );
