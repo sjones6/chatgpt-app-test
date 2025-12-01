@@ -3,7 +3,6 @@ import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
 import { createMcpHandler, withMcpAuth } from "mcp-handler";
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
-import { cookies } from "next/headers";
 
 const verifyToken = async (
   req: Request,
@@ -35,9 +34,9 @@ const verifyToken = async (
   }
 };
 
-const getAppsSdkCompatibleHtml = async (baseUrl: string, path: string, init?: RequestInit) => {
-  console.log("endpoint", `${baseUrl}${path}`);
-  const result = await fetch(`${baseUrl}${path}`, init);
+const getAppsSdkCompatibleHtml = async (url: URL, init?: RequestInit) => {
+  console.log("endpoint", url.toString());
+  const result = await fetch(url, init);
   console.log("result status", result.status);
   return await result.text();
 };
@@ -72,7 +71,7 @@ const handler = (request: Request) => {
       };
     }
 
-    const html = await getAppsSdkCompatibleHtml(baseURL, "/chatgpt", {
+    const html = await getAppsSdkCompatibleHtml(new URL("/chatgpt", baseURL), {
       headers: {
         Authorization: `Bearer ${request.auth.token}`,
       },
