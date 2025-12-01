@@ -44,6 +44,12 @@ export async function updateSession(request: NextRequest) {
     !request.nextUrl.pathname.startsWith('/login') &&
     !request.nextUrl.pathname.startsWith('/auth')
   ) {
+    console.log("no user, redirecting to login");
+    console.log("request.nextUrl.pathname", request.nextUrl.pathname);
+    console.log("request.nextUrl.search", request.nextUrl.search);
+    console.log("request.nextUrl.searchParams", request.nextUrl.searchParams);
+    console.log("request.nextUrl.searchParams.get('redirect')", request.nextUrl.searchParams.get('redirect'));
+    console.log("request.nextUrl.searchParams.get('redirect')", request.nextUrl.searchParams.get('redirect'));
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
     url.pathname = '/auth/login'
