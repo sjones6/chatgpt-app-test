@@ -130,11 +130,12 @@ const handler = (request: Request) => {
         _meta: widgetMeta(contentWidget),
       },
       async ({ name }) => {
+        console.log("calling tool", name);
         return {
           content: [
             {
               type: "text",
-              text: name,
+              text: `Hello, ${name}!`,
             },
           ],
           structuredContent: {
