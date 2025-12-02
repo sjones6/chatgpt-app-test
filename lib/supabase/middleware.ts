@@ -6,8 +6,6 @@ export async function updateSession(request: NextRequest) {
     request,
   })
 
-  const cookies = request.cookies.toString();
-  console.log("cookies", cookies);
 
   // With Fluid compute, don't put this client in a global environment
   // variable. Always create a new one on each request.
@@ -41,11 +39,12 @@ export async function updateSession(request: NextRequest) {
   const { data } = await supabase.auth.getClaims()
   const user = data?.claims
 
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/auth')
-  ) {
+  // if the request is an API route and the user is not authenticated, return a 401 instead of redirecting to the login page
+  if (!user && request.nextUrl.pathname.startsWith('/api')) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (!user && !request.nextUrl.pathname.startsWith('/auth') && !request.nextUrl.pathname.startsWith('/login')) {
     console.log("no user, redirecting to login");
     console.log("request.nextUrl.pathname", request.nextUrl.pathname);
     console.log("request.nextUrl.search", request.nextUrl.search);
