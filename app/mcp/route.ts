@@ -139,6 +139,7 @@ const handler = createMcpHandler(async (server) => {
         inputSchema: {},
       },
       async (params, extra) => {
+        console.log("get_auth_token", extra);
         const token = extra.authInfo?.token;
         if (!token) {
           throw new Error("Authentication token not available");

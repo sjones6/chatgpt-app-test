@@ -7,8 +7,10 @@ export default function ChatGPTLayout({
   children: React.ReactNode;
 }) {
   return (
-    <AuthRequired>
-      <SupabaseProviderWrapper>{children}</SupabaseProviderWrapper>
-    </AuthRequired>
+    <SupabaseProviderWrapper>
+      <AuthRequired>
+        {children}
+      </AuthRequired>
+    </SupabaseProviderWrapper>
   );
 }
