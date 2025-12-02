@@ -41,7 +41,7 @@ export default function RootLayout({
 function NextChatSDKBootstrap({ baseUrl }: { baseUrl: string }) {
   return (
     <>
-      <base href={baseUrl}></base>
+      <base href={baseUrl} />
       <script>{`window.innerBaseUrl = ${JSON.stringify(baseUrl)}`}</script>
       <script>{`window.__isChatGptApp = typeof window.openai !== "undefined";`}</script>
       <script>
