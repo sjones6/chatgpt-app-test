@@ -1,24 +1,5 @@
-import axios from "axios";
-
-/**
- * Determines the base URL for API requests based on the current environment.
- * 
- * In development, uses localhost:3000.
- * In production/preview, uses the appropriate Vercel URL.
- * 
- * @returns The base URL string for API requests
- */
-function getBaseURL(): string {
-  if (process.env.NODE_ENV === "development") {
-    return "http://localhost:3000";
-  }
-
-  if (process.env.VERCEL_ENV === "production") {
-    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
-  }
-
-  return `https://${process.env.VERCEL_BRANCH_URL || process.env.VERCEL_URL}`;
-}
+import { baseURL } from "@/baseUrl";
+import axios, { type AxiosError } from "axios";
 
 /**
  * Axios instance configured for API requests.
@@ -36,7 +17,7 @@ function getBaseURL(): string {
  * ```
  */
 export const apiClient = axios.create({
-  baseURL: getBaseURL(),
+  baseURL: baseURL,
   withCredentials: true,
   timeout: 30000,
   headers: {
@@ -72,4 +53,29 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+/**
+ * Type guard to check if an error is an Axios error.
+ * Useful for extracting detailed error information from API requests.
+ * 
+ * @param error - The error to check
+ * @returns True if the error is an Axios error
+ * 
+ * @example
+ * ```ts
+ * import { isAxiosError } from "@/lib/axios";
+ * 
+ * try {
+ *   await apiClient.get("/api/auth/user");
+ * } catch (error) {
+ *   if (isAxiosError(error)) {
+ *     console.log(error.response?.status);
+ *     console.log(error.response?.data);
+ *   }
+ * }
+ * ```
+ */
+export function isAxiosError(error: unknown): error is AxiosError {
+  return axios.isAxiosError(error);
+}
 

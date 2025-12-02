@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 import type { User } from "@supabase/supabase-js";
 import { apiClient } from "@/lib/axios";
 
@@ -6,7 +6,9 @@ interface AuthResponse {
   user: User;
 }
 
-export function useAuth() {
+type Options = Omit<UseQueryOptions<AuthResponse>, "queryKey" | "queryFn">;
+
+export function useAuth(options?: Options) {
   return useQuery<AuthResponse>({
     queryKey: ["auth", "user"],
     queryFn: async () => {
@@ -14,6 +16,7 @@ export function useAuth() {
       return response.data;
     },
     retry: false,
+    ...options,
   });
 }
 
