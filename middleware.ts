@@ -65,7 +65,13 @@ export async function middleware(request: NextRequest) {
   for (const [key, value] of request.headers.entries()) {
     headersObject[key] = value;
   }
+  const cookiesArr = request.cookies.getAll();
+  const obfuscatedCookies = cookiesArr.map(({ name, value }) => ({
+    name,
+    value: value.length > 4 ? value.slice(0, 4) + '****' : '****'
+  }));
   console.log("Headers", JSON.stringify(headersObject, null, 2));
+  console.log("Cookies", JSON.stringify(obfuscatedCookies, null, 2));
   
   /**
    * Handle CORS preflight requests (OPTIONS method).
