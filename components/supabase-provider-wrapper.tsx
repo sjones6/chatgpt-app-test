@@ -44,9 +44,6 @@ export function SupabaseProviderWrapper({
   }
 
   return <SupabaseProvider accessToken={accessToken}>
-    <pre className="fixed top-0 left-0 w-full bg-background/50 backdrop-blur-sm p-4">
-      {JSON.stringify({ accessToken, apiToken: process.env.API_TOKEN }, null, 2)}
-    </pre>
     {children}
     </SupabaseProvider>;
 }
