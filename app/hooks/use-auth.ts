@@ -1,13 +1,12 @@
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 import type { User } from "@supabase/supabase-js";
-import { baseURL } from "@/baseUrl";
 import { useSupabase } from "@/components/supabase-provider";
 
 interface AuthResponse {
   user: User;
 }
 
-type Options = Omit<UseQueryOptions<AuthResponse>, "queryKey" | "queryFn">;
+type Options = Omit<UseQueryOptions<AuthResponse>, "queryKey" | "queryFn" | "enabled">;
 
 export function useAuth(options?: Options) {
   const { supabase } = useSupabase();

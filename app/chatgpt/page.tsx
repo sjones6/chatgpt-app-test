@@ -55,6 +55,9 @@ function Home() {
           <li className="mb-2 tracking-[-.01em]">
             Name returned from tool call: {name ?? "..."}
           </li>
+          <li>
+            API token: {process.env.API_TOKEN}
+          </li>
           <li className="mb-2 tracking-[-.01em]">MCP server path: /mcp</li>
         </ol>
 
