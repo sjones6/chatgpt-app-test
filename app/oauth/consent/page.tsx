@@ -32,7 +32,7 @@ export default async function ConsentPage({
     return <div>Error: {error?.message || "Invalid authorization request"}</div>;
   }
 
-  const scopes = authDetails.scope?.split(" ");
+  const scopes = authDetails.scope?.split(" ") ?? [];
 
   return (
     <div className="font-sans p-8 sm:p-20 max-w-2xl mx-auto">
