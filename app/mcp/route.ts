@@ -130,6 +130,32 @@ const handler = createMcpHandler(async (server) => {
         };
       }
     );
+
+    server.registerTool(
+      "get_auth_token",
+      {
+        title: "Get Auth Token",
+        description: "Returns the authentication token for the current user",
+        inputSchema: {},
+      },
+      async (params, extra) => {
+        const token = extra.authInfo?.token;
+        if (!token) {
+          throw new Error("Authentication token not available");
+        }
+        return {
+          content: [
+            {
+              type: "text",
+              text: token,
+            },
+          ],
+          structuredContent: {
+            token: token,
+          },
+        };
+      }
+    );
   });
 
 const authHandler = withMcpAuth(handler, verifyToken, {
