@@ -43,6 +43,12 @@ export function SupabaseProviderWrapper({
     return null;
   }
 
-  return <SupabaseProvider accessToken={accessToken}>{children}</SupabaseProvider>;
+  return <SupabaseProvider accessToken={accessToken}>
+    {children}
+    <div>
+      <p>API token: {process.env.API_TOKEN}</p>
+      <div>Access token: {accessToken}</div>
+    </div>
+    </SupabaseProvider>;
 }
 
