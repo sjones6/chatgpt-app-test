@@ -137,9 +137,6 @@ const handler = createMcpHandler(async (server) => {
         title: "Get Auth Token",
         description: "Returns the authentication token for the current user",
         inputSchema: {},
-        outputSchema: {
-          token: z.string().describe("The authentication token for the current user"),
-        },
       },
       async (_, extra) => {
         console.log("get_auth_token", extra);
@@ -151,7 +148,7 @@ const handler = createMcpHandler(async (server) => {
           content: [
             {
               type: "text",
-              text: "includes token in structured content",
+              text: token
             },
           ],
           structuredContent: {
