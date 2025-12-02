@@ -38,7 +38,7 @@ export default async function ConsentPage({
     <div className="font-sans p-8 sm:p-20 max-w-2xl mx-auto">
       <main className="flex flex-col gap-8">
         <h1 className="text-4xl font-black tracking-tight">
-          Authorize {authDetails?.client.name}
+          Authorize {authDetails?.client?.name}
         </h1>
         <p className="text-lg">
           This application wants to access your account.
@@ -46,7 +46,7 @@ export default async function ConsentPage({
         <div className="flex flex-col gap-4 p-6 border border-solid rounded-lg">
           <div>
             <p className="font-semibold">Client:</p>
-            <p>{authDetails?.client.name}</p>
+            <p>{authDetails?.client?.name}</p>
           </div>
           <div>
             <p className="font-semibold">Redirect URI:</p>
