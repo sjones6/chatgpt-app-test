@@ -22,6 +22,13 @@ const addCorsHeaders = (response: NextResponse): NextResponse => {
  * Processes all incoming requests and applies appropriate headers and auth checks.
  */
 export async function middleware(request: NextRequest) {
+
+  console.log("Request", request.headers.get("Origin"));
+  const headersObject: Record<string, string> = {};
+  for (const [key, value] of request.headers.entries()) {
+    headersObject[key] = value;
+  }
+  console.log("Headers", JSON.stringify(headersObject, null, 2));
   
   /**
    * Handle CORS preflight requests (OPTIONS method).
@@ -29,10 +36,13 @@ export async function middleware(request: NextRequest) {
    */
   if (request.method === "OPTIONS") {
     console.log("OPTIONS request", request.headers.get("Origin"));
-    console.log("Headers", request.headers.toString());
+    const headersObject: Record<string, string> = {};
+    for (const [key, value] of request.headers.entries()) {
+      headersObject[key] = value;
+    }
+    console.log("Headers", JSON.stringify(headersObject, null, 2));
     return addCorsHeaders(new NextResponse(null, { status: 204 }));
   }
-  
 
   /**
    * Exclude static assets and public files from authentication checks.
