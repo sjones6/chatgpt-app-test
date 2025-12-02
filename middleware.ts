@@ -59,19 +59,6 @@ const addCorsHeaders = (request: NextRequest, response: NextResponse): NextRespo
  * Processes all incoming requests and applies appropriate headers and auth checks.
  */
 export async function middleware(request: NextRequest) {
-
-  console.log("Request", request.headers.get("Origin"));
-  const headersObject: Record<string, string> = {};
-  for (const [key, value] of request.headers.entries()) {
-    headersObject[key] = value;
-  }
-  const cookiesArr = request.cookies.getAll();
-  const obfuscatedCookies = cookiesArr.map(({ name, value }) => ({
-    name,
-    value: value.length > 4 ? value.slice(0, 4) + '****' : '****'
-  }));
-  console.log("Headers", JSON.stringify(headersObject, null, 2));
-  console.log("Cookies", JSON.stringify(obfuscatedCookies, null, 2));
   
   /**
    * Handle CORS preflight requests (OPTIONS method).
