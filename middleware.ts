@@ -28,6 +28,8 @@ export async function middleware(request: NextRequest) {
    * Returns a 204 No Content response with CORS headers to allow cross-origin requests.
    */
   if (request.method === "OPTIONS") {
+    console.log("OPTIONS request", request.headers.get("Origin"));
+    console.log("Headers", request.headers.toString());
     return addCorsHeaders(new NextResponse(null, { status: 204 }));
   }
   
