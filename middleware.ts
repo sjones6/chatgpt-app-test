@@ -33,8 +33,6 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/_next/image") ||
     pathname.startsWith("/favicon.ico") ||
     pathname.match(/\.(ico|png|jpg|jpeg|gif|svg|webp|css|js|woff|woff2|ttf|eot|json)$/i);
-
-  console.log("pathname", pathname);
   /**
    * Exclude MCP routes from Supabase authentication checks.
    * MCP routes handle their own bearer token authentication, so they bypass
@@ -42,9 +40,6 @@ export async function middleware(request: NextRequest) {
    */
   const isMCPRoute =
     pathname.startsWith("/mcp") || pathname.includes(".well-known") || pathname.startsWith("/chatgpt");
-
-  console.log("isAsset", isAsset);
-  console.log("isMCPRoute", isMCPRoute);
 
   if (isAsset || isMCPRoute) {
     const response = NextResponse.next();

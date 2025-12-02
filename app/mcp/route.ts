@@ -62,22 +62,8 @@ function widgetMeta(widget: ContentWidget) {
   } as const;
 }
 
-const handler = (request: Request) => {
-  return createMcpHandler(async (server) => {
-
-    if (!request.auth) {
-      return {
-        error: "Unauthorized",
-      };
-    }
-
-    const html = await getAppsSdkCompatibleHtml(new URL("/chatgpt", baseURL), {
-      headers: {
-        Authorization: `Bearer ${request.auth.token}`,
-      },
-    });
-    console.log("loaded html");
-    console.log(html);
+const handler = createMcpHandler(async (server) => {
+    const html = await getAppsSdkCompatibleHtml(new URL("/chatgpt", baseURL));
     
     const contentWidget: ContentWidget = {
       id: "show_content",
@@ -129,7 +115,6 @@ const handler = (request: Request) => {
         _meta: widgetMeta(contentWidget),
       },
       async ({ name }) => {
-        console.log("calling tool", name);
         return {
           content: [
             {
@@ -145,8 +130,7 @@ const handler = (request: Request) => {
         };
       }
     );
-  })(request);
-};
+  });
 
 const authHandler = withMcpAuth(handler, verifyToken, {
   required: true,
